@@ -1,10 +1,10 @@
+from alerts.messages import MessageError, MessageData, MessageClients, MessageEnd, MessageConnecting, MessageConnected, MessageWaitConnect, MessageConnectedNetwork
 from machine import Pin
 import urequests
 import network
 import socket
 import json
 
-from alerts.messages import MessageError, MessageData, MessageClients, MessageEnd, MessageConnecting, MessageConnected, MessageWaitConnect, MessageConnectedNetwork
 
 # Setting up the LED pin as an output pin.
 led = Pin(2, Pin.OUT)
