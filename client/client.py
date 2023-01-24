@@ -1,6 +1,6 @@
 import socket, network, time
 
-sta_if = network.WLAN(network.STA_IF)
+sta_if = network.WLAN(network.STA_IF) 
 
 def internet():
     sta_if.active(True)

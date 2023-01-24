@@ -3,7 +3,7 @@ import json as ujson
 requests = None
 sta_if = network.WLAN(network.STA_IF)
 AP = network.WLAN(network.AP_IF)
-sAP = None
+sAP = None 
 
 def internet():
     sta_if.active(True)
