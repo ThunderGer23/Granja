@@ -1,85 +1,84 @@
-from alerts.messages import MessageError, MessageData, MessageClients, MessageEnd, MessageConnecting, MessageConnected, MessageWaitConnect, MessageConnectedNetwork
-from machine import Pin
-import urequests
-import network
-import socket
-import json
+import network, time, upip, socket
+import json as ujson
+requests = None
+sta_if = network.WLAN(network.STA_IF)
+AP = network.WLAN(network.AP_IF)
+sAP = None
 
+def internet():
+    sta_if.active(True)
+    sta_if.scan()
+    sta_if.connect('Totalplay-64AA','64AA2A07y2jxWzgP')
+    sta_if.isconnected()
+    while sta_if.isconnected() == False:
+        print('A',end="")
+        time.sleep_ms(100)
+        continue
+    print('!\nConnected!\n')
+    return
 
-# Setting up the LED pin as an output pin.
-led = Pin(2, Pin.OUT)
-input = Pin(3, Pin.INPUT)
+def accessPoint():
+    global sAP
+    AP.config(essid = 'ESP_32', channel = 11, authmode = 3, password = '12345678')
+    AP.config(max_clients = 15)
+    AP.active(True)
+    addrAP = socket.getaddrinfo('0.0.0.0', 80)[0][-1]
+    sAP = socket.socket()
+    sAP.bind(addrAP)
+    sAP.listen(100)
+    print(AP.ifconfig())
+    return
 
-from time import sleep_ms as sms
+def requirements():
+    global requests
+    upip.debug = True
+    upip.install('urequests')
+    import urequests
+    requests = urequests
+    return
 
-# Creating a wifi access point.
-wifi = network.WLAN(network.AP_IF if input.value() == 1 else network.STA_IF)
+def sendRequest(req):
+    token = req["token"]
+    message = req['message']
+    url = req['url']
+    request = {'token': token,'message': message}
+    post_data = ujson.dumps(request).encode('utf8')
+    print("\n\n",str(post_data),"\n\n")
+    res = requests.post(url,headers = {'content-type': 'application/json'},data=post_data)
+    return res.text
+            
+def config():
+    accessPoint()
+    internet()
+    requirements()
+    return
 
-# Creating a socket object.
-s = socket.socket()
-
-def configure_wifi(Channel: int):
-    # Configuring the wifi access point.
-    wifi.config(essid = 'ThunderGer', channel = Channel, authmode = 3, password = '12345678')
-    wifi.config(max_clients = 15)
-    if (wifi.active(True)):
-        return True
-    return False
-
-def configure_wifi_connector(ssid: str, password: str):
-    wifi.active(False)
-    sms(5)
-    wifi.active(True)
-    return 1 if wifi.connect(ssid, password) else 0
-
-def configure_socket(Port: int):
-    addr = socket.getaddrinfo('0.0.0.0', Port)[0][-1]
-    s.bind(addr)
-    s.listen(10)
-    return addr
-
-def readClients() :        
-    return len(wifi.status('stations'))
-
-def waitClients():    
-    channel = 11
-    port = 80
-    print (configure_socket(port) if configure_wifi(channel) else MessageError)
-    print(wifi.ifconfig())                      
-    while input.value() == 1:        
-        sms(1000)
-        if(readClients() > 0): 
-            cl,addr = s.accept() 
-            data = cl.recv(4096)
-            if (len(data) == 0):
+def main():
+    request = {
+        'token':'daa39d53-6283-47a1-b945-b7ee6528dde0',#'5f7be1f5-3dbb-41dc-8645-300beced1fe4',
+        'message':'Beep-boop',
+        'url':'https://notigram-api.fly.dev/sendMessage'
+    }
+    text = ''
+    while(True):
+        time.sleep(1)
+        if(sta_if.isconnected()) and (len(AP.status('stations')) > 0):
+            cl,addrAP = sAP.accept()
+            request['message'] = cl.recv(4096)
+            if(len(request['message']) == 0):
+                print('Continue...')
                 continue
-            else: 
-                print(MessageData,str(data))
-                if (str(data) == "b'Holi'"):
-                    prueba = "Crayoli"
-                    response = json.dumps({'header':'HTTP/1.0 200 OK\r\nContent-type: text/html\r\n\r\n','data':'{"response":'+ prueba +'}'})
-                cl.send(response)  
-            cl.close()         
+            else:
+                response = sendRequest(request)
+                print('Response({}): '.format(len(response)),response)
+                cl.send(response)
+            cl.close()
         else:
-            print(MessageClients)
-    return 1    
+            if sta_if.isconnected() != True: print('Wi-Fi is not connected.')
+            if len(AP.status('stations')) == 0: print('No hay clientes :\'v')
+    return
+        
 
-def sendMessages():
-    print(MessageWaitConnect if configure_wifi_connector('IZZI-6854', '3C0461086854') else MessageConnectedNetwork)
-    if not wifi.isconnected():
-        print(MessageConnected)
-        while(not wifi.isconnected() and timeout < 5):
-            led.value(1)
-            sms(1)
-            print(5- timeout, 'seconds')
-            timeout += 1
-            led.value(0)
-            sms(1)  
-    else:
-        print(MessageConnecting)
-        print(wifi.ifconfig())
-        req = urequests.get('https://redcod-production.up.railway.app/test')        
-        print(req.text)
-        led.value(1)
-
-print(MessageEnd if not waitClients() else sendMessages())
+config()
+main()
+    
