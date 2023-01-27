@@ -3,16 +3,15 @@ from network import AP_IF, STA_IF, WLAN
 
 # * Importing the modem and password from the keys.py file.
 # ! Change access passwords for each access node
-from access.keys import modem as mod
-from access.keys import passModem as passw
+from keys.keys import modem as mod
+from keys.keys import passModem as passw
 
 # * Importing the modules from the access folder.
-from access.accessPointSocket import accessPoint
-from access.connectTo import internet
-from access.iRequirements import requirements
-from access.sendRequestSocket import sendRequest
-from alerts.messages import (MessageClients, MessageConfigError, MessageWiFi,
-                             request)
+from config.accessPointSocket import accessPoint
+from config.connectTo import internet
+from config.iRequirements import requirements
+from keys.sendRequestSocket import sendRequest
+from messages.messages import (MessageClients, MessageConfigError, MessageWiFi, request)
 
 # * Defining the variables that will be used in the program.
 requests = None
