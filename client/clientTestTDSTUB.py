@@ -1,7 +1,9 @@
-import socket
+import socket, network, time
 from machine import Pin, ADC
+from machine.ADC import ATTN_0DB, WIDTH_12BIT
 from time import sleep_ms as slms
 from alerts.messages import MessageAlertValues
+from accesscodes.connectTo import internet
 
 # Setting the pins for the sensors.
 pinSensorTDS = 39
@@ -12,11 +14,11 @@ analogBuffer = []
 
 # Setting up the ADC for the pins.
 sensTDS = ADC(Pin(pinSensorTDS))
-sensTDS.atten(ADC.ATTN_0DB)
-sensTDS.atten(ADC.WIDTH_12BIT)
+sensTDS.atten(ATTN_0DB)
+sensTDS.atten(WIDTH_12BIT)
 sensTUB = ADC(Pin(pinSensorTUB))
-sensTUB.atten(ADC.ATTN_0DB)
-sensTUB.atten(ADC.WIDTH_12BIT)
+sensTUB.atten(ATTN_0DB)
+sensTUB.atten(WIDTH_12BIT)
 
 # These are just variables that are used in the code.
 bTem = 0
@@ -83,7 +85,6 @@ def readTDSValue():
     # *      s.sendall(message)
     # *      print(str(s.recv(4096),'utf-8'))
     # *      s.close()
-
     # ? with socket.socket(socket.AF_INET,socket.SOCK_STREAM) as s:
     # ?     addr = ("192.168.4.1",80)
     # ?     sensTDS = readTDSValue()
@@ -98,4 +99,5 @@ def readTDSValue():
     #       # TODO: make success to repeat data 3 times
     # ?     s.close()
 
+# ! internet()
 # ! initSensors()
