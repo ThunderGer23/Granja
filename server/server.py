@@ -3,7 +3,7 @@ import json as ujson
 requests = None
 sta_if = network.WLAN(network.STA_IF)
 AP = network.WLAN(network.AP_IF)
-sAP = None 
+sAP = None
 
 def internet():
     sta_if.active(True)
@@ -46,7 +46,7 @@ def sendRequest(req):
     print("\n\n",str(post_data),"\n\n")
     res = requests.post(url,headers = {'content-type': 'application/json'},data=post_data)
     return res.text
-            
+
 def config():
     accessPoint()
     internet()
@@ -77,8 +77,7 @@ def main():
             if sta_if.isconnected() != True: print('Wi-Fi is not connected.')
             if len(AP.status('stations')) == 0: print('No hay clientes :\'v')
     return
-        
+
 
 config()
 main()
-    

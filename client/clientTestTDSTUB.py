@@ -3,6 +3,8 @@ from machine import Pin, ADC
 from machine.ADC import ATTN_0DB, WIDTH_12BIT
 from time import sleep_ms as slms
 from alerts.messages import MessageAlertValues
+from accesscodes.keys import passwordESPServ as passw
+from accesscodes.keys import nameModule as mod
 from accesscodes.connectTo import internet
 
 # Setting the pins for the sensors.
@@ -85,7 +87,8 @@ def readTDSValue():
     # *      s.sendall(message)
     # *      print(str(s.recv(4096),'utf-8'))
     # *      s.close()
-    # ? with socket.socket(socket.AF_INET,socket.SOCK_STREAM) as s:
+    # ? try:
+    # ?     s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
     # ?     addr = ("192.168.4.1",80)
     # ?     sensTDS = readTDSValue()
     # ?     sensTUB = readSenseTUB()
@@ -94,10 +97,15 @@ def readTDSValue():
     # ?     s.connect(addr)
     # ?     message = bytes(input(MessageAlertValues + str(sensTDS) + str(sensTUB)),'utf-8')
     # ?     s.sendall(message)
+    # ? except Exception as e:
+    # ?     print(e,'!!!')
+    # ?     pass
     #       # TODO: Here you could also validate whether the message is sent correctly asking
     #       # TODO: for the value of return of str(s.recv(4096),'utf-8'), if the message is not
     #       # TODO: make success to repeat data 3 times
+    # ? finally:
     # ?     s.close()
+    # ? return
 
-# ! internet()
+# ! internet(mod, passw)
 # ! initSensors()
