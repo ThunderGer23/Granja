@@ -1,7 +1,7 @@
 import socket
 from machine import Pin, ADC
 from time import sleep_ms as slms
-
+from alerts.messages import MessageAlertValues
 
 # Setting the pins for the sensors.
 pinSensorTDS = 39
@@ -91,7 +91,7 @@ def readTDSValue():
     # ?     slms(SENSERATE)
     #       # TODO: Here the conditional to evaluate the values and if we meet the connection
     # ?     s.connect(addr)
-    # ?     message = bytes(input('Alerta! valores fuera de rango' + str(sensTDS) + str(sensTUB)),'utf-8')
+    # ?     message = bytes(input(MessageAlertValues + str(sensTDS) + str(sensTUB)),'utf-8')
     # ?     s.sendall(message)
     #       # TODO: Here you could also validate whether the message is sent correctly asking
     #       # TODO: for the value of return of str(s.recv(4096),'utf-8'), if the message is not
