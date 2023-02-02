@@ -107,5 +107,5 @@ def initSensors():
         s.close()
     return
 
-# ! internet(mod, passw)
-# ! initSensors()
+internet(mod, passw)
+initSensors()
