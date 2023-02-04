@@ -30,7 +30,7 @@ def config():
         global sAP, requests
         sAP = accessPoint(sAP, AP, maxClients)
         internet(mod, passw)
-        requests = requirements()
+        requests = requirements('urequests')
         return 1
     except:
         return 0

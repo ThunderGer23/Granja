@@ -20,5 +20,9 @@ def internet(mod, passw):
         print('A',end="")
         slms(100)
         continue
-    print('!\nConnected!\n')
-    return
+    MAC = sta_if.config("mac")
+    print('\nMAC Address is: ',MAC)
+    return MAC
+
+if __name__ == '__main__':
+    internet('NSFW','NotSafe=4Work')
