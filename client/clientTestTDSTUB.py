@@ -1,6 +1,6 @@
 import socket, network, time
 from machine import Pin, ADC
-from machine.ADC import ATTN_0DB, WIDTH_12BIT
+from machine.ADC import ATTN_11DB, WIDTH_12BIT
 from time import sleep_ms as slms
 from alerts.messages import MessageAlertValues
 from access.keys import passwordESPServ as passw
@@ -16,10 +16,10 @@ analogBuffer = []
 
 # Setting up the ADC for the pins.
 sensTDS = ADC(Pin(pinSensorTDS))
-sensTDS.atten(ATTN_0DB)
+sensTDS.atten(ATTN_11DB)
 sensTDS.atten(WIDTH_12BIT)
 sensTUB = ADC(Pin(pinSensorTUB))
-sensTUB.atten(ATTN_0DB)
+sensTUB.atten(ATTN_11DB)
 sensTUB.atten(WIDTH_12BIT)
 
 # These are just variables that are used in the code.
@@ -64,7 +64,7 @@ def readTDSValue():
             SCOUNT = 30
 
     for i in analogBuffer:
-        averageVoltage = getMedianNum(analogBuffer,SCOUNT) * float(VREF) / float(4096.0);
+        averageVoltage = float(getMedianNum(analogBuffer,SCOUNT) * VREF / 4095);
         # ! The optimal operating value for the sensor is 25 °,
         # ! If the temperature value is greater or lower, it must be adjusted to compensate for the sensor
         compensationCoefficient = 1+float(0.02*(TEMP-25));

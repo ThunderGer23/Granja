@@ -1,15 +1,13 @@
 from network import STA_IF, WLAN
 from time import sleep_ms as slms
 
-# ?@param mod: The name of the WiFi network you want to connect to
-# ?@param passw: The password for the WiFi network
 def internet(mod, passw):
     """
     It connects to the internet
     
-    :param mod: The name of the WiFi network you want to connect to
-    :param passw: The password for the WiFi network
-    :return: Nothing.
+    @param mod: The name of the WiFi network you want to connect to
+    @param passw: The password for the WiFi network
+    @return: Nothing.
     """
     sta_if = WLAN(STA_IF)
     sta_if.active(True)

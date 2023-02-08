@@ -11,15 +11,9 @@ temp = 25
 SCOUNT = 30
 VREF = 3.3
 
-def getMedianNum(bArray, iFilterLen):
-    bTab = bArray.copy()
-    for i in range(iFilterLen):
-        for j in range((iFilterLen-i-1)):
-            if (bTab[j] > bTab[j + 1]):
-                bTem = bTab[j]
-                bTab[j] = bTab[j + 1]
-                bTab[i + 1] = bTem
-    return bTab[(iFilterLen - 1) / 2] if ((iFilterLen & 1) > 0) else (bTab[iFilterLen / 2] + bTab[iFilterLen / 2 - 1]) / 2
+def getMedianNum(bArray):
+    bArray.sort()
+    return bArray[len(bArray)//2] + bArray[~len(bArray)//2]/2
 
 def readTDSValue():
     if (SCOUNT >= 0):
@@ -31,7 +25,7 @@ def readTDSValue():
             SCOUNT = 30
 
     for i in analogBuffer:
-        averageVoltage = getMedianNum(analogBuffer,SCOUNT) * float(VREF) / float(4096.0);
+        averageVoltage = getMedianNum(analogBuffer) * float(VREF) / float(4096.0);
         # ! The optimal operating value for the sensor is 25 °,
         # ! If the temperature value is greater or lower, it must be adjusted to compensate for the sensor
         compensationCoefficient = 1+float(0.02*(temp-25));
