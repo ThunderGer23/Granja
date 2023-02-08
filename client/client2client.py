@@ -3,29 +3,38 @@ from access.iRequirements import requirements
 from time import sleep_ms as slms
 import espnow
 
-
 #COM6 MAC (izq): b'X\xbf%6\x1e\x94'
 #COM3 MAC (der): b'x\xe3m\t\xb3\x0c'
 
-MAC = internet('NSFW','NotSafe=4Work')
-
-rad = espnow.ESPNow()
-rad.active(True)
+MAC = None
 peers = [b'X\xbf%6\x1e\x94',b'x\xe3m\t\xb3\x0c']
-peers.remove(MAC)
-for peer in peers:
-    rad.add_peer(peer)
-    
-num = 0
-var = ''
-print('Starting communications')
-while(True):
+rad = espnow.ESPNow()
+
+def config():
+    MAC = internet('NSFW','NotSafe=4Work')
+    print('Hi! My MAC is ', MAC)
+    rad.active(True)
+    peers.remove(MAC)
+    print('And my peers are: ', peers)
     for peer in peers:
-        var = rad.send(peer,str(num),False)
-    num += 1
-    host, msg = rad.irecv(100)
-    if(msg):             # msg == None if timeout in recv()
-        print(host,' says: ', msg)
-        if(msg == b'end'):
-            break
+        rad.add_peer(peer)
+
+async def send(msg):
+    await rad.send(msg)
+
+def main():    
+    num = 0
+    var = ''
+    print('Starting communications')
+    while(True):
+        send(str(num))
+        num += 1
+        host, msg = rad.recv(1000)
+        try:            # msg == None if timeout in recv()
+            print(host,' says: ', msg)
+        except Exception as e:
+            print(Exception)
     
+if __name__ == "__main__":
+    config()
+    main()
